@@ -1,0 +1,36 @@
+common --check_direct_dependencies=error
+
+# --- Cluster connection (shared by every remote config) ----------------------
+build:remote-common --remote_executor=grpcs://opal.cluster.engflow.com
+build:remote-common --bes_backend=grpcs://opal.cluster.engflow.com
+build:remote-common --bes_results_url=https://opal.cluster.engflow.com/invocation/
+build:remote-common --bes_lifecycle_events
+build:remote-common --tls_client_certificate=/Users/santiago/Documents/cluster_configs/opal/mtls/engflow.crt
+build:remote-common --tls_client_key=/Users/santiago/Documents/cluster_configs/opal/mtls/engflow.key
+
+# --- Remote execution tuning (shared by every remote config) -----------------
+build:remote-common --jobs=40
+build:remote-common --remote_timeout=3600
+build:remote-common --grpc_keepalive_time=30s
+build:remote-common --incompatible_strict_action_env=true
+build:remote-common --disk_cache=
+
+# --- Linux remote execution ---------------------------------------------------
+# Cross-compiles for linux/amd64 on Linux workers. Produces binaries that do
+# NOT run on macOS -- use this for Linux-targeted libraries (e.g. raylib_linux).
+build:remote --config=remote-common
+build:remote --extra_execution_platforms=//platform:linux_x64
+build:remote --host_platform=//platform:linux_x64
+build:remote --platforms=//platform:linux_x64
+
+# --- macOS remote execution ---------------------------------------------------
+# Builds for macOS/arm64 on the macos_arm_m2 worker pool. Produces binaries
+# that DO run on this Mac -- use this to build demos remotely and run them
+# locally afterwards.
+build:remote-mac --config=remote-common
+build:remote-mac --host_platform=//platform:macos_arm64
+build:remote-mac --platforms=//platform:macos_arm64
+# Pins the worker's actual Xcode (26.5.0.17F42) -- queried via
+# //tools/xcode_probe. Without this apple_support falls back to a hardcoded
+# "macosx10.11" default SDK that doesn't exist on the worker.
+build:remote-mac --xcode_version_config=//platform:installed_xcodes

@@ -138,3 +138,13 @@ raylib.com/
 src/*protocol.h
 src/*protocol-code.h
 src/*protocol-code.c
+
+# Bazel
+bazel-*
+
+# any2bazel scratch artifacts (extracted models, diffs, aquery dumps)
+aquery.json
+diff.json
+model.cmake*.json
+model.bazel*.json
+memory_screenshot.png

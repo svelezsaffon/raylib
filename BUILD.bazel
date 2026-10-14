@@ -1,0 +1,333 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "objc_library")
+
+cc_library(
+    name = "glfw",
+    srcs = [
+        "src/external/glfw/src/context.c",
+        "src/external/glfw/src/egl_context.c",
+        "src/external/glfw/src/init.c",
+        "src/external/glfw/src/input.c",
+        "src/external/glfw/src/macos_time.c",
+        "src/external/glfw/src/monitor.c",
+        "src/external/glfw/src/null_init.c",
+        "src/external/glfw/src/null_joystick.c",
+        "src/external/glfw/src/null_monitor.c",
+        "src/external/glfw/src/null_window.c",
+        "src/external/glfw/src/osmesa_context.c",
+        "src/external/glfw/src/platform.c",
+        "src/external/glfw/src/posix_module.c",
+        "src/external/glfw/src/posix_thread.c",
+        "src/external/glfw/src/vulkan.c",
+        "src/external/glfw/src/window.c",
+    ],
+    hdrs = glob([
+        "src/external/glfw/include/GLFW/*.h",
+        "src/external/glfw/src/*.h",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=c99",
+        "-fPIC",
+        "-Wall",
+    ],
+    local_defines = ["_GLFW_COCOA"],
+    includes = [
+        "src/external/glfw/include",
+        "src/external/glfw/src",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    textual_hdrs = ["src/external/glfw/src/mappings.h"],
+    visibility = ["//visibility:private"],
+    deps = [":glfw_cocoa"],
+)
+
+objc_library(
+    name = "glfw_cocoa",
+    srcs = [
+        "src/external/glfw/src/cocoa_init.m",
+        "src/external/glfw/src/cocoa_joystick.m",
+        "src/external/glfw/src/cocoa_monitor.m",
+        "src/external/glfw/src/cocoa_window.m",
+        "src/external/glfw/src/nsgl_context.m",
+    ],
+    hdrs = glob([
+        "src/external/glfw/include/GLFW/*.h",
+        "src/external/glfw/src/*.h",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-fPIC",
+        "-Wall",
+        "-fno-objc-arc",
+    ],
+    local_defines = ["_GLFW_COCOA"],
+    includes = [
+        "src/external/glfw/include",
+        "src/external/glfw/src",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "raylib",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+    ] + glob(["src/external/*.h"]),
+    textual_hdrs = glob([
+        "src/external/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=gnu99",
+    ],
+    defines = [
+        "GL_SILENCE_DEPRECATION",
+        "GRAPHICS_API_OPENGL_33",
+        "PLATFORM_DESKTOP",
+    ],
+    includes = ["src"],
+    linkopts = [
+        "-framework Cocoa",
+        "-framework IOKit",
+        "-framework OpenGL",
+        "-framework QuartzCore",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:public"],
+    deps = [":glfw"],
+)
+
+cc_library(
+    name = "glfw_linux",
+    srcs = [
+        "src/external/glfw/src/context.c",
+        "src/external/glfw/src/egl_context.c",
+        "src/external/glfw/src/glx_context.c",
+        "src/external/glfw/src/init.c",
+        "src/external/glfw/src/input.c",
+        "src/external/glfw/src/linux_joystick.c",
+        "src/external/glfw/src/monitor.c",
+        "src/external/glfw/src/null_init.c",
+        "src/external/glfw/src/null_joystick.c",
+        "src/external/glfw/src/null_monitor.c",
+        "src/external/glfw/src/null_window.c",
+        "src/external/glfw/src/osmesa_context.c",
+        "src/external/glfw/src/platform.c",
+        "src/external/glfw/src/posix_module.c",
+        "src/external/glfw/src/posix_poll.c",
+        "src/external/glfw/src/posix_thread.c",
+        "src/external/glfw/src/posix_time.c",
+        "src/external/glfw/src/vulkan.c",
+        "src/external/glfw/src/window.c",
+        "src/external/glfw/src/x11_init.c",
+        "src/external/glfw/src/x11_monitor.c",
+        "src/external/glfw/src/x11_window.c",
+        "src/external/glfw/src/xkb_unicode.c",
+    ],
+    hdrs = glob([
+        "src/external/glfw/include/GLFW/*.h",
+        "src/external/glfw/src/*.h",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=c99",
+        "-fPIC",
+        "-Wall",
+    ],
+    local_defines = [
+        "_DEFAULT_SOURCE",
+        "_GLFW_X11",
+    ],
+    includes = [
+        "src/external/glfw/include",
+        "src/external/glfw/src",
+    ],
+    target_compatible_with = ["@platforms//os:linux"],
+    textual_hdrs = ["src/external/glfw/src/mappings.h"],
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "raylib_linux",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+    ] + glob(["src/external/*.h"]),
+    textual_hdrs = glob([
+        "src/external/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=gnu99",
+    ],
+    defines = [
+        "GRAPHICS_API_OPENGL_33",
+        "PLATFORM_DESKTOP",
+    ],
+    includes = ["src"],
+    linkopts = [
+        "-lGL",
+        "-lpthread",
+        "-lm",
+    ],
+    target_compatible_with = ["@platforms//os:linux"],
+    visibility = ["//visibility:public"],
+    deps = [":glfw_linux"],
+)
+
+cc_library(
+    name = "raylib_memory",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+    ] + glob(["src/external/*.h"]),
+    textual_hdrs = glob([
+        "src/external/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=gnu99",
+    ],
+    defines = [
+        "GRAPHICS_API_OPENGL_SOFTWARE",
+        "PLATFORM_MEMORY",
+    ],
+    includes = ["src"],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "raylib_memory_linux",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+    ] + glob(["src/external/*.h"]),
+    textual_hdrs = glob([
+        "src/external/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=gnu99",
+    ],
+    defines = [
+        "GRAPHICS_API_OPENGL_SOFTWARE",
+        "PLATFORM_MEMORY",
+    ],
+    includes = ["src"],
+    linkopts = [
+        "-lpthread",
+        "-lm",
+    ],
+    target_compatible_with = ["@platforms//os:linux"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "raylib_rgfw",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+    ] + glob(["src/external/*.h"]) + glob(["src/external/RGFW/**/*.h"]),
+    textual_hdrs = glob([
+        "src/external/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-fno-strict-aliasing",
+        "-Werror=implicit-function-declaration",
+        "-Werror=pointer-arith",
+        "-std=gnu99",
+    ],
+    defines = [
+        "GRAPHICS_API_OPENGL_33",
+        "PLATFORM_DESKTOP_RGFW",
+    ],
+    includes = ["src"],
+    linkopts = [
+        "-framework Cocoa",
+        "-framework OpenGL",
+        "-framework QuartzCore",
+    ],
+    visibility = ["//visibility:public"],
+)
