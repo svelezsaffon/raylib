@@ -1,0 +1,6 @@
+{
+  "bazel_args": ["-c", "opt"],
+  "ignore": {
+    "include_prefixes": ["build-bazel-ref/"]
+  }
+}

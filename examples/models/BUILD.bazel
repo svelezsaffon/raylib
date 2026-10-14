@@ -1,0 +1,7 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "models_first_person_maze",
+    srcs = ["models_first_person_maze.c"],
+    deps = ["//:raylib"],
+)

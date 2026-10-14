@@ -1,0 +1,7 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "core_basic_window",
+    srcs = ["core_basic_window.c"],
+    deps = ["//:raylib"],
+)

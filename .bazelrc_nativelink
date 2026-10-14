@@ -1,0 +1,21 @@
+
+# --- Cluster connection ------------------------------------------------------
+# Local NativeLink instance (see ~/Documents/market/nativelink/basic_cas.json5),
+# running in Docker on this Apple Silicon host — cache, scheduler, and a single
+# linux/arm64 worker all share port 50051.
+build --remote_cache=grpc://localhost:50051
+build --remote_executor=grpc://localhost:50052
+build --remote_default_exec_properties=cpu_count=2
+
+# --- Remote execution platform -----------------------------------------------
+# The NativeLink worker is linux/arm64, not the linux/amd64 used by the other
+# .bazelrc_* configs in this repo (EngFlow, BuildBuddy, Namespace).
+build --extra_execution_platforms=//platform:linux_x64
+build --host_platform=//platform:linux_x64
+build --platforms=//platform:linux_x64
+
+# --- Remote execution tuning -------------------------------------------------
+#build --jobs=40
+#build --remote_timeout=3600
+#build --grpc_keepalive_time=30s
+#build --incompatible_strict_action_env=true
