@@ -667,6 +667,7 @@ void InitWindow(int width, int height, const char *title)
     if (result != 0)
     {
         TRACELOG(LOG_WARNING, "SYSTEM: Failed to initialize platform");
+        CORE.Window.ready = false;  // Mark window as not ready on platform init failure
         return;
     }
 
@@ -683,6 +684,7 @@ void InitWindow(int width, int height, const char *title)
 
     // Initialize rlgl default data (buffers and shaders)
     // NOTE: Current fbo size stored as globals in rlgl for convenience
+    // IMPROVEMENT: Check for initialization errors and clean up resources on failure
     rlglInit(CORE.Window.render.width, CORE.Window.render.height);
 
     // Setup default viewport
@@ -726,6 +728,8 @@ void InitWindow(int width, int height, const char *title)
     SetRandomSeed(get_rand_32());
     #endif
 
+    // Mark window as ready on successful initialization
+    CORE.Window.ready = true;
     TRACELOG(LOG_INFO, "SYSTEM: Working Directory: %s", GetWorkingDirectory());
 }
 
